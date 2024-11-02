@@ -1,0 +1,80 @@
+:root {
+    --primary-color: #007bff; /* Azul */
+    --secondary-color: #28a745; /* Verde */
+    --accent-color: #ffcc00; /* Amarelo */
+    --background-color: #f4f4f4; /* Cinza claro */
+    --footer-background: #343a40; /* Fundo do rodapé */
+    --text-color: #343a40; /* Cor do texto */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+h1, h2 {
+    color: var(--primary-color); /* Cor dos títulos */
+}
+
+.service-card {
+    background-color: white; /* Cor de fundo dos cartões */
+    margin-bottom: 20px; /* Espaçamento entre os cartões */
+    border: 1px solid #dee2e6; /* Borda dos cartões */
+    border-radius: 8px; /* Bordas arredondadas */
+    transition: transform 0.3s, box-shadow 0.3s; /* Efeito de transição */
+}
+
+.service-card:hover {
+    transform: translateY(-5px); /* Levanta o cartão ao passar o mouse */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+}
+
+.project-card {
+    background-color: #ffffff; /* Cor de fundo dos projetos */
+    margin-bottom: 20px; /* Espaçamento entre os projetos */
+    border: 1px solid #dee2e6; /* Borda dos projetos */
+    border-radius: 8px; /* Bordas arredondadas */
+    transition: transform 0.3s, box-shadow 0.3s; /* Efeito de transição */
+}
+
+.project-card:hover {
+    transform: scale(1.05); /* Aumenta o cartão ao passar o mouse */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+}
+
+.quote-icon {
+    color: var(--accent-color); /* Cor para ícone de citação */
+}
+
+.tips-list {
+    list-style: none; /* Remove marcadores da lista */
+    padding: 0; /* Remove espaçamento padrão */
+}
+
+.tips-list li {
+    background-color: var(--primary-color); /* Cor de fundo das dicas */
+    color: white; /* Cor do texto das dicas */
+    border: none; /* Remove a borda */
+    padding: 10px; /* Espaçamento interno */
+    margin: 5px 0; /* Espaçamento entre as dicas */
+    border-radius: 5px; /* Bordas arredondadas */
+}
+
+/* Animação de transição */
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity 300ms ease-in;
+}
