@@ -10,6 +10,7 @@ import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Register } from './components/Register';
 import { Login } from './components/Login';
+import Logout from './components/Logout';
 
 function App() {
     return (
@@ -44,6 +45,10 @@ function App() {
                             <Nav.Link as={Link} to="/login">
                                 <FontAwesomeIcon icon={faSignInAlt} className="me-1" />
                                 Login
+                            </Nav.Link>
+                            <Nav.Link as={Link} to="#" onClick={Logout}>
+                                <FontAwesomeIcon icon={faSignInAlt} className="me-1" />
+                                Logout
                             </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>

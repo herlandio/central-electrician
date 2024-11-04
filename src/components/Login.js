@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleLogin } from '../services/api/routes/login';
 
 export const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
-    const [showPassword, setShowPassword] = useState(false);
+    const authError = useSelector((state) => state.auth.error);
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -14,11 +17,7 @@ export const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Login:', formData);
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
+        dispatch(handleLogin(formData));
     };
 
     return (
@@ -48,19 +47,17 @@ export const Login = () => {
                                     <FontAwesomeIcon icon={faLock} />
                                 </InputGroup.Text>
                                 <FormControl
-                                    type={showPassword ? 'text' : 'password'}
+                                    type="password"
                                     placeholder="Senha"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
                                 />
-                                <Button variant="outline-secondary" onClick={togglePasswordVisibility}>
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </Button>
                             </InputGroup>
                         </FormGroup>
                         <Button variant="success" type="submit">Entrar</Button>
+                        {authError && <p className="text-danger mt-3">{authError}</p>}
                     </Form>
                 </Col>
             </Row>

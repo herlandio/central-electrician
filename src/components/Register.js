@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleRegister } from '../services/api/routes/register';
 
 export const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
+    const authError = useSelector((state) => state.auth.error);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -14,11 +17,7 @@ export const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Cadastro:', formData);
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
+        dispatch(handleRegister(formData));
     };
 
     return (
@@ -63,19 +62,17 @@ export const Register = () => {
                                     <FontAwesomeIcon icon={faLock} />
                                 </InputGroup.Text>
                                 <FormControl
-                                    type={showPassword ? 'text' : 'password'}
+                                    type="password"
                                     placeholder="Senha"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
                                 />
-                                <Button variant="outline-secondary" onClick={togglePasswordVisibility}>
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </Button>
                             </InputGroup>
                         </FormGroup>
                         <Button variant="primary" type="submit">Cadastrar</Button>
+                        {authError && <p className="text-danger mt-3">{authError}</p>}
                     </Form>
                 </Col>
             </Row>
