@@ -25,7 +25,7 @@ export const Register = () => {
             return;
         }
         setIsLoading(true);
-        dispatch(handleRegister(formData).finally(() => setIsLoading(false)));
+        dispatch(handleRegister(formData)).finally(() => setIsLoading(false));
     };
 
     useEffect(() => {
