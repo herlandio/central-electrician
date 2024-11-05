@@ -105,7 +105,7 @@ export const Register = () => {
                                 />
                             </InputGroup>
                         </FormGroup>
-                        <Button variant="primary" type="submit" className='mb-3'>
+                        <Button variant="primary" type="submit">
                             {isLoading ? (
                                     <>
                                         <Spinner as="span" animation="border" size="sm" aria-hidden="true" /> Cadastrando...
