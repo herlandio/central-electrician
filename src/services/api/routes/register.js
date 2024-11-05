@@ -1,14 +1,15 @@
-import { register, setError } from '../../../store';
+import { register, setMessage } from '../../../store';
 import axiosInstance from '../config/axiosInstance';
 
-export const handleRegister = async (userData) => {
+export const handleRegister = (userData) => {
     return async (dispatch) => {
         try {
             const response = await axiosInstance.post('/register', userData);
-            dispatch(register(response.data));
+            dispatch(register({ user: response?.data?.user }));
+            dispatch(setMessage({ type: 'success', message: response?.data?.message }));
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Erro de registro. Verifique os dados informados.';
-            dispatch(setError(errorMessage));
+            dispatch(setMessage({ type: 'error', message: errorMessage }));
         }
     };
 };

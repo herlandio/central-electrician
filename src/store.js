@@ -5,6 +5,7 @@ const initialState = {
     user: null,
     token: null,
     error: null,
+    success: null,
 };
 
 const authSlice = createSlice({
@@ -16,6 +17,7 @@ const authSlice = createSlice({
             state.user = action.payload.user;
             state.token = action.payload.token;
             state.error = null;
+            state.success = null;
             localStorage.setItem('token', action.payload.token);
         },
         logout(state) {
@@ -23,6 +25,7 @@ const authSlice = createSlice({
             state.user = null;
             state.token = null;
             state.error = null;
+            state.success = null;
             localStorage.removeItem('token');
         },
         register(state, action) {
@@ -30,15 +33,27 @@ const authSlice = createSlice({
             state.user = action.payload.user;
             state.token = action.payload.token;
             state.error = null;
+            state.success = action.payload.message;
             localStorage.setItem('token', action.payload.token);
         },
-        setError(state, action) {
-            state.error = action.payload;
+        setMessage(state, action) {
+           const { type, message } = action.payload;
+            if (type === 'error') {
+                state.error = message;
+                state.success = null;
+            } else if (type === 'success') {
+                state.success = message;
+                state.error = null;
+            }
+        },
+        clearMessages(state) {
+            state.error = null;
+            state.success = null;
         },
     },
 });
 
-export const { login, logout, register, setError } = authSlice.actions;
+export const { login, logout, register, setMessage, clearMessages } = authSlice.actions;
 
 const store = configureStore({
     reducer: {

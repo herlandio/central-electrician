@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Button, Form, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Button, Form, FormGroup, FormControl, InputGroup, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleLogin } from '../services/api/routes/login';
+import { clearMessages } from '../store';
 
 export const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const [isLoading, setIsLoading] = useState(false);
     const authError = useSelector((state) => state.auth.error);
+    const authSuccess = useSelector((state) => state.auth.success);
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
@@ -15,10 +18,22 @@ export const Login = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(handleLogin(formData));
+        setIsLoading(true);
+        dispatch(handleLogin(formData)).finally(() => setIsLoading(false));
     };
+    
+    useEffect(() => {
+        if (authSuccess || authError) {
+            setFormData({ email: '', password: ''}); 
+            const timer = setTimeout(() => {
+                dispatch(clearMessages());
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [authSuccess, authError, dispatch]);
 
     return (
         <Container className="mt-5">
@@ -33,7 +48,7 @@ export const Login = () => {
                                 </InputGroup.Text>
                                 <FormControl
                                     type="email"
-                                    placeholder="E-mail"
+                                    placeholder="Digite seu e-mail"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -48,7 +63,7 @@ export const Login = () => {
                                 </InputGroup.Text>
                                 <FormControl
                                     type="password"
-                                    placeholder="Senha"
+                                    placeholder="Digite sua senha"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
@@ -56,8 +71,19 @@ export const Login = () => {
                                 />
                             </InputGroup>
                         </FormGroup>
-                        <Button variant="success" type="submit">Entrar</Button>
-                        {authError && <p className="text-danger mt-3">{authError}</p>}
+                        <Button variant="success" type="submit" disabled={isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <Spinner as="span" animation="border" size="sm" aria-hidden="true" /> Carregando...
+                                </>
+                            ) : (
+                                'Entrar'
+                            )}
+                        </Button>
+                        <output aria-live="polite" className="d-block mt-3">
+                            {authError && <p className="text-danger">{authError}</p>}
+                            {authSuccess && <p className="text-success">{authSuccess}</p>}
+                        </output>
                     </Form>
                 </Col>
             </Row>

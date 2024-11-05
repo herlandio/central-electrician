@@ -1,14 +1,15 @@
-import { login, setError } from '../../../store';
+import { login, setMessage } from '../../../store';
 import axiosInstance from '../config/axiosInstance';
 
-export const handleLogin = async (credentials) => {
+export const handleLogin = (credentials) => {
     return async (dispatch) => {
         try {
             const response = await axiosInstance.post('/login', credentials);
-            dispatch(login(response.data));
+            dispatch(login(response?.data?.token));
+            dispatch(setMessage({ type: 'success', message: response?.data?.message }));
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Erro de login. Verifique suas credenciais.';
-            dispatch(setError(errorMessage));
+            const errorMessage = error.response?.data?.message;
+            dispatch(setMessage({ type: 'error', message: errorMessage }));
         }
     }
 };

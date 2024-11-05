@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Button, Form, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Button, Form, FormGroup, FormControl, InputGroup, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleRegister } from '../services/api/routes/register';
+import { clearMessages } from '../store';
 
 export const Register = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: '' });
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
     const authError = useSelector((state) => state.auth.error);
+    const authSuccess = useSelector((state) => state.auth.success);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -17,9 +20,25 @@ export const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(handleRegister(formData));
+        if (formData.password !== formData.password_confirmation) {
+            alert("As senhas não são iguais.");
+            return;
+        }
+        setIsLoading(true);
+        dispatch(handleRegister(formData).finally(() => setIsLoading(false)));
     };
 
+    useEffect(() => {
+        if (authSuccess || authError) {
+            setFormData({ name: '', email: '', password: '', password_confirmation: '' }); 
+            const timer = setTimeout(() => {
+                dispatch(clearMessages());
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [authSuccess, authError, dispatch]);
+    
     return (
         <Container className="mt-5">
             <Row className="justify-content-center">
@@ -71,8 +90,35 @@ export const Register = () => {
                                 />
                             </InputGroup>
                         </FormGroup>
-                        <Button variant="primary" type="submit">Cadastrar</Button>
-                        {authError && <p className="text-danger mt-3">{authError}</p>}
+                        <FormGroup controlId="formPasswordConfirmation" className="mb-3">
+                            <InputGroup>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faLock} />
+                                </InputGroup.Text>
+                                <FormControl
+                                    type="password"
+                                    placeholder="Confirme a Senha"
+                                    name="password_confirmation"
+                                    value={formData.password_confirmation}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </InputGroup>
+                        </FormGroup>
+                        <Button variant="primary" type="submit" className='mb-3'>
+                            {isLoading ? (
+                                    <>
+                                        <Spinner as="span" animation="border" size="sm" aria-hidden="true" /> Cadastrando...
+                                    </>
+                                ) : (
+                                    'Cadastrar'
+                                )
+                            }
+                        </Button>
+                        <output aria-live="polite" className="d-block mt-3">    
+                            {authSuccess && <p className="text-success">{authSuccess}</p>}
+                            {authError && <p className="text-danger mt-3">{authError}</p>}
+                        </output>
                     </Form>
                 </Col>
             </Row>

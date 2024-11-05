@@ -1,15 +1,16 @@
-import { logout, setError } from '../../../store';
+import { logout, setMessage } from '../../../store';
 import axiosInstance from '../config/axiosInstance';
 
 export const handleLogout = () => {
     return async (dispatch) => {
         try {
-            await axiosInstance.post('/logout');
+            const exit = await axiosInstance.post('/logout');
             localStorage.removeItem('token');
             dispatch(logout());
+            dispatch(setMessage({ type: 'success', message: exit?.data?.message }));
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Erro ao realizar logout.';
-            dispatch(setError(errorMessage));
+            dispatch(setMessage({ type: 'error', message: errorMessage }));
         }
     }
 };
