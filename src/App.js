@@ -46,10 +46,7 @@ function App() {
                                 <FontAwesomeIcon icon={faSignInAlt} className="me-1" />
                                 Login
                             </Nav.Link>
-                            <Nav.Link as={Link} to="#" onClick={Logout}>
-                                <FontAwesomeIcon icon={faSignInAlt} className="me-1" />
-                                Logout
-                            </Nav.Link>
+                            <Logout />
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
