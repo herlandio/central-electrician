@@ -11,6 +11,7 @@ const DateRangeSelector = ({ selectedDateRange, onSelect }) => (
         <Dropdown.Item eventKey="Últimos 7 dias">Últimos 7 dias</Dropdown.Item>
         <Dropdown.Item eventKey="Últimos 30 dias">Últimos 30 dias</Dropdown.Item>
         <Dropdown.Item eventKey="Este mês">Este mês</Dropdown.Item>
+        <Dropdown.Item eventKey="Último semestre">Último semestre</Dropdown.Item>
     </DropdownButton>
 );
 

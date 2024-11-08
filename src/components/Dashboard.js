@@ -8,25 +8,31 @@ import DateRangeSelector from './dashboard/DateRangeSelector';
 
 const calculateDateRange = (range) => {
     const today = new Date();
-    let filterDate = new Date(today);
+    today.setHours(0, 0, 0, 0);
+
+    let startDate = new Date(today);
+    let endDate = new Date(today);
 
     switch (range) {
         case 'Últimos 7 dias':
-            filterDate.setDate(today.getDate() - 7);
+            startDate.setDate(today.getDate() - 7);
             break;
         case 'Últimos 30 dias':
-            filterDate.setDate(today.getDate() - 30);
+            startDate.setDate(today.getDate() - 30);
             break;
         case 'Este mês':
-            filterDate.setMonth(today.getMonth() - 1);
+            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            break;
+        case 'Último semestre':
+            startDate.setMonth(today.getMonth() - 6);
+            startDate.setDate(1);
             break;
         default:
             break;
     }
 
-    filterDate.setHours(0, 0, 0, 0);
-
-    return filterDate;
+    return { startDate, endDate };
 };
 
 const Dashboard = () => {
@@ -57,7 +63,7 @@ const Dashboard = () => {
     ];
 
     const allAppointments = [
-        { id: 1, service: 'Instalação Residencial', date: '2024-11-01', status: 'Completado', technician: 'Carlos', duration: '2h', estimatedCompletion: '2024-11-01' },
+        { id: 1, service: 'Instalação Residencial', date: '2024-11-02', status: 'Completado', technician: 'Carlos', duration: '2h', estimatedCompletion: '2024-11-01' },
         { id: 2, service: 'Manutenção de Rede Elétrica', date: '2024-10-31', status: 'Pendente', technician: 'Mariana', duration: '3h', estimatedCompletion: '2024-11-02' },
         { id: 3, service: 'Manutenção de Ar Condicionado', date: '2024-10-30', status: 'Cancelado', technician: 'Rodrigo', duration: '2h', estimatedCompletion: '2024-10-30' },
     ];
@@ -67,24 +73,25 @@ const Dashboard = () => {
 
     const handleDateRangeChange = (range) => {
         setSelectedDateRange(range);
-        const filterDate = calculateDateRange(range);
+        const { startDate, endDate } = calculateDateRange(range);
 
         const filtered = allAppointments.filter((appointment) => {
             const appointmentDate = new Date(appointment.date);
             appointmentDate.setHours(0, 0, 0, 0);
-            return appointmentDate >= filterDate;
+
+            return appointmentDate >= startDate && (!endDate || appointmentDate <= endDate);
         });
 
         setFilteredAppointments(filtered);
     };
 
     useEffect(() => {
-        const filterDate = calculateDateRange(selectedDateRange);
+        const { startDate, endDate } = calculateDateRange(selectedDateRange);
         const filtered = allAppointments.filter((appointment) => {
             const appointmentDate = new Date(appointment.date);
             appointmentDate.setHours(0, 0, 0, 0);
 
-            return appointmentDate >= filterDate;
+            return appointmentDate >= startDate && (!endDate || appointmentDate <= endDate);
         });
 
         setFilteredAppointments(filtered);
