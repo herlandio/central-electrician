@@ -5,6 +5,7 @@ import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleLogin } from '../services/api/routes/login';
 import { clearMessages } from '../store';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -12,6 +13,7 @@ export const Login = () => {
     const authError = useSelector((state) => state.auth.error);
     const authSuccess = useSelector((state) => state.auth.success);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,7 +23,14 @@ export const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        dispatch(handleLogin(formData)).finally(() => setIsLoading(false));
+    
+        const result = dispatch(handleLogin(formData));
+        if (result instanceof Promise) {
+            await result;
+        }
+    
+        navigate('/dashboard');
+        setIsLoading(false);
     };
     
     useEffect(() => {
